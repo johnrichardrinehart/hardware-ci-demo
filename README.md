@@ -58,3 +58,122 @@ repository contains only a diagram and has no Nix output yet. The template
 would add unused flake, formatting, hook, and CI configuration. It will
 inform the later NixOS closure work when the project gains executable Nix
 behavior.
+
+## NixOS closures
+
+`flake.nix` defines two headless `aarch64-linux` SD-card images. The RPi
+configuration uses only the direct upstream `nixos/nixpkgs` input. The ROCK
+5C configuration uses `johnrichardrinehart/rock5c-nixos` with its board
+modules and package overlay. It does not use the RPi input. The flake overrides
+that input's `nixpkgs` revision with the first upstream revision that exports
+`ubootRock5ModelC`; the ROCK module requires that firmware package. It imports
+only the base and option modules. It does not import the media, desktop, Wi-Fi,
+flash, or session modules. Both configurations disable documentation and ALSA.
+They do not configure a desktop or an automatic root login. Both images
+include Bash, coreutils, util-linux, systemd tools, and the `en_US.UTF-8`
+locale for diagnostics. The RPi also includes `tio` and `libgpiod` tools.
+
+### Serial consoles
+
+The RPi uses the upstream Raspberry Pi 4 kernel. It keeps its Linux console
+on GPIO14 and GPIO15 at 115200 baud. The loaded RPi 4 DTB maps those pins to
+`serial1`, the mini-UART. Linux therefore assigns it line 1 and names it
+`ttyS1`. The image reserves two 8250 runtime slots so alias line 1 can
+register. It selects earlycon from the DTB `stdout-path`, so Linux uses the
+dedicated BCM2835 AUX UART setup. It fixes the mini-UART core clock at
+250 MHz, so its 115200-baud divisor remains stable across firmware and Linux
+handoff. It
+enables `serial-getty@ttyS1`, so the RPi
+serial terminal provides a login prompt after userspace starts. Connect a
+separate 3.3 V USB-to-TTL adapter to the ROCK 5C console:
+
+| ROCK 5C pin | USB-to-TTL adapter pin |
+| --- | --- |
+| 6 (`GND`) | `GND` |
+| 8 (`TX`) | `RXD` |
+
+Do not connect the adapter power wire. The ROCK console uses 1,500,000 baud,
+8N1, with no flow control. On the RPi, run this command after the adapter
+appears as `/dev/ttyUSB0`:
+
+```console
+tio --baudrate 1500000 /dev/ttyUSB0
+```
+
+The adapter isolates ROCK output from RPi `serial0` output. The RPi console
+continues to use GPIO14 and GPIO15. The USB adapter records the ROCK console.
+
+Both images enable password SSH for the `demo` user. Its password is `demo`,
+and it is in the `wheel` group. Both images include the configured Bash shell,
+so SSH provides an interactive session. The image declares the account and
+plaintext password on each boot. SSH uses the standard NixOS PAM password path.
+Root cannot log in through SSH. After DHCP assigns an address, connect
+with this command:
+
+```console
+ssh demo@<rpi-address>
+```
+
+Use SSH to inspect RPi output with `journalctl -kf` or `dmesg -w`.
+
+### GPIO power-key control
+
+The RPi image includes the `libgpiod` command-line tools. The `demo` user is
+in the `gpio` group and can access `/dev/gpiochip*` without `sudo`. It is also
+in `dialout` for access to the ROCK USB-to-TTL adapter. List the
+GPIO controllers and inspect GPIO17 with these commands:
+
+```console
+gpiodetect
+gpioinfo --chip gpiochip0 17
+```
+
+GPIO17 is RPi physical pin 11. Set it high to release the ROCK power key. The
+command owns the line until you stop it with `Ctrl-C`:
+
+```console
+gpioset --chip gpiochip0 17=1
+```
+
+Pulse the power key low for 500 ms, return it high, and release the line:
+
+```console
+gpioset --chip gpiochip0 --toggle 500ms,0 17=0
+```
+
+The external 10 kΩ resistor pulls GPIO17 high after `gpioset` exits.
+
+Run the bundled command to force the ROCK off, wait two seconds, and press
+the power key for 500 ms:
+
+```console
+rock5c-power-cycle
+```
+
+This command causes an unclean shutdown. Use it only when a normal reboot is
+not available.
+
+Build an image from an `aarch64-linux` builder, or use a configured cross
+builder:
+
+```console
+nix build .#rpi4-sd-image
+nix build .#rock5c-sd-image
+```
+
+The RPi image uses the upstream Raspberry Pi 4 firmware and U-Boot SD-image
+module. The ROCK image uses the ROCK 5C module's U-Boot and SD-image builder.
+Both image files include the boot firmware and root filesystem.
+
+Run the size checks after building the images:
+
+```console
+nix build .#checks.x86_64-linux.rpi4-sd-image-under-4GiB
+nix build .#checks.x86_64-linux.rock5c-sd-image-under-4GiB
+```
+
+Each check fails when its uncompressed image is larger than 4 GiB. The image
+builders size the root partition from the actual closure, so no desktop or
+preallocated empty root space is included. The initial images will fit on a
+4 GiB SD card when their size check succeeds. Use a card with at least
+4,294,967,296 bytes. A card sold as 4 GB can be smaller than 4 GiB.
