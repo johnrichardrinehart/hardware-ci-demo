@@ -1,0 +1,151 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">Raspberry Pi 4 power-key interface for Radxa ROCK 5C</title>
+  <desc id="desc">A physical circuit schematic. Raspberry Pi GPIO17 drives a 74LS136N through a series resistor and a 3.3 volt pull-up. The open-collector output connects to ROCK 5C J3 pin 3 PWRON_L. J3 pin 1 remains disconnected.</desc>
+  <defs>
+    <style>
+      text { font-family: "DejaVu Sans", Arial, sans-serif; fill: #17212b; }
+      .heading { font-size: 25px; font-weight: bold; }
+      .label { font-size: 16px; font-weight: bold; }
+      .small { font-size: 13px; }
+      .pin-num { font-size: 9px; font-family: "DejaVu Sans Mono", monospace; }
+      .pin { font-size: 13px; font-family: "DejaVu Sans Mono", monospace; }
+      .wire { fill: none; stroke: #17212b; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .signal { stroke: #e67e22; }
+      .power { stroke: #d23838; }
+      .ground { stroke: #2674b9; }
+      .logic-power { stroke: #7b4ab3; }
+      .board { fill: #e8f0e8; stroke: #376c44; stroke-width: 3; }
+      .chip { fill: #fbf1d3; stroke: #5b4b26; stroke-width: 3; }
+      .connector { fill: #eceff3; stroke: #4b5867; stroke-width: 2; }
+      .pad { fill: #d4a72c; stroke: #694f00; stroke-width: 1; }
+      .note { fill: #fff8db; stroke: #ad8b24; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1400" height="900" fill="#ffffff"/>
+  <text x="700" y="45" text-anchor="middle" class="heading">RPi 4 → 74LS136N → ROCK 5C power-key interface</text>
+  <text x="700" y="72" text-anchor="middle" class="small">Blue is ground. Orange is GPIO17. Red is +5 V. Purple is +3.3 V.</text>
+
+  <!-- Raspberry Pi physical header -->
+  <rect x="55" y="145" width="290" height="495" rx="18" class="board"/>
+  <text x="200" y="185" text-anchor="middle" class="heading" style="font-size:18px">Raspberry Pi 4 Model B</text>
+  <text x="200" y="211" text-anchor="middle" class="label">40-pin GPIO header</text>
+  <rect x="116" y="238" width="168" height="320" rx="7" class="connector"/>
+  <text x="200" y="580" text-anchor="middle" class="small">Physical pin view</text>
+  <!-- All 40 physical header pins: even pins left, odd pins right -->
+  <circle cx="155" cy="249" r="8" class="pad"/><text x="168" y="252" text-anchor="start" class="pin-num">2</text>
+  <circle cx="245" cy="249" r="8" class="pad"/><text x="232" y="252" text-anchor="end" class="pin-num">1</text>
+  <circle cx="155" cy="264" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="267" text-anchor="start" class="pin-num">4</text>
+  <circle cx="245" cy="264" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="267" text-anchor="end" class="pin-num">3</text>
+  <circle cx="155" cy="279" r="8" class="pad"/><text x="168" y="282" text-anchor="start" class="pin-num">6</text>
+  <circle cx="245" cy="279" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="282" text-anchor="end" class="pin-num">5</text>
+  <circle cx="155" cy="294" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="297" text-anchor="start" class="pin-num">8</text>
+  <circle cx="245" cy="294" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="297" text-anchor="end" class="pin-num">7</text>
+  <circle cx="155" cy="309" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="312" text-anchor="start" class="pin-num">10</text>
+  <circle cx="245" cy="309" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="312" text-anchor="end" class="pin-num">9</text>
+  <circle cx="155" cy="324" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="327" text-anchor="start" class="pin-num">12</text>
+  <circle cx="245" cy="324" r="8" class="pad"/><text x="232" y="327" text-anchor="end" class="pin-num">11</text>
+  <circle cx="155" cy="339" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="342" text-anchor="start" class="pin-num">14</text>
+  <circle cx="245" cy="339" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="342" text-anchor="end" class="pin-num">13</text>
+  <circle cx="155" cy="354" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="357" text-anchor="start" class="pin-num">16</text>
+  <circle cx="245" cy="354" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="357" text-anchor="end" class="pin-num">15</text>
+  <circle cx="155" cy="369" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="372" text-anchor="start" class="pin-num">18</text>
+  <circle cx="245" cy="369" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="372" text-anchor="end" class="pin-num">17</text>
+  <circle cx="155" cy="384" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="387" text-anchor="start" class="pin-num">20</text>
+  <circle cx="245" cy="384" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="387" text-anchor="end" class="pin-num">19</text>
+  <circle cx="155" cy="399" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="402" text-anchor="start" class="pin-num">22</text>
+  <circle cx="245" cy="399" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="402" text-anchor="end" class="pin-num">21</text>
+  <circle cx="155" cy="414" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="417" text-anchor="start" class="pin-num">24</text>
+  <circle cx="245" cy="414" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="417" text-anchor="end" class="pin-num">23</text>
+  <circle cx="155" cy="429" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="432" text-anchor="start" class="pin-num">26</text>
+  <circle cx="245" cy="429" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="432" text-anchor="end" class="pin-num">25</text>
+  <circle cx="155" cy="444" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="447" text-anchor="start" class="pin-num">28</text>
+  <circle cx="245" cy="444" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="447" text-anchor="end" class="pin-num">27</text>
+  <circle cx="155" cy="459" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="462" text-anchor="start" class="pin-num">30</text>
+  <circle cx="245" cy="459" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="462" text-anchor="end" class="pin-num">29</text>
+  <circle cx="155" cy="474" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="477" text-anchor="start" class="pin-num">32</text>
+  <circle cx="245" cy="474" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="477" text-anchor="end" class="pin-num">31</text>
+  <circle cx="155" cy="489" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="492" text-anchor="start" class="pin-num">34</text>
+  <circle cx="245" cy="489" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="492" text-anchor="end" class="pin-num">33</text>
+  <circle cx="155" cy="504" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="507" text-anchor="start" class="pin-num">36</text>
+  <circle cx="245" cy="504" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="507" text-anchor="end" class="pin-num">35</text>
+  <circle cx="155" cy="519" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="522" text-anchor="start" class="pin-num">38</text>
+  <circle cx="245" cy="519" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="522" text-anchor="end" class="pin-num">37</text>
+  <circle cx="155" cy="534" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="168" y="537" text-anchor="start" class="pin-num">40</text>
+  <circle cx="245" cy="534" r="5" fill="#aeb7c0" stroke="#4b5867"/><text x="232" y="537" text-anchor="end" class="pin-num">39</text>
+  <text x="105" y="240" text-anchor="end" class="pin">+5 V</text>
+  <text x="295" y="240" class="pin">+3.3 V</text>
+  <text x="105" y="282" text-anchor="end" class="pin">GND</text>
+  <text x="292" y="313" class="small" fill="#e67e22">GPIO17</text>
+
+  <!-- IC -->
+  <rect x="590" y="170" width="260" height="480" rx="10" class="chip"/>
+  <path d="M680 170 Q720 215 760 170" fill="none" stroke="#5b4b26" stroke-width="3"/>
+  <circle cx="720" cy="195" r="5" fill="#5b4b26"/>
+  <text x="720" y="345" text-anchor="middle" class="heading">U1</text>
+  <text x="720" y="375" text-anchor="middle" class="label">74LS136N</text>
+  <text x="720" y="401" text-anchor="middle" class="small">quad XOR, open-collector</text>
+  <!-- pins left -->
+  <g class="wire"><path d="M590 245 H550"/><path d="M590 285 H550"/><path d="M590 325 H550"/><path d="M590 385 H550"/><path d="M590 425 H550"/><path d="M590 465 H550"/></g>
+  <g class="pin"><text x="598" y="250">1  1A</text><text x="598" y="290">2  1B</text><text x="598" y="330">3  1Y (OC)</text><text x="598" y="390">4  2A</text><text x="598" y="430">5  2B</text><text x="598" y="470">6  2Y</text></g>
+  <!-- pins right -->
+  <g class="wire"><path d="M850 245 H890"/><path d="M850 285 H890"/><path d="M850 325 H890"/><path d="M850 385 H890"/><path d="M850 425 H890"/><path d="M850 465 H890"/><path d="M850 505 H890"/></g>
+  <g class="pin"><text x="842" y="250" text-anchor="end">14 VCC</text><text x="842" y="290" text-anchor="end">13 4A</text><text x="842" y="330" text-anchor="end">12 4B</text><text x="842" y="390" text-anchor="end">11 4Y</text><text x="842" y="430" text-anchor="end">10 3A</text><text x="842" y="470" text-anchor="end">9 3B</text><text x="842" y="510" text-anchor="end">8 3Y</text></g>
+  <path d="M720 650 V690" class="wire ground"/><text x="732" y="681" class="pin">7 GND</text>
+  <path d="M720 650 V690" class="wire ground"/>
+  <!-- Pin 14 is at the upper-right corner; pin 7 is at the bottom. -->
+
+  <!-- Rock terminal -->
+  <rect x="1050" y="210" width="290" height="340" rx="18" class="board"/>
+  <text x="1195" y="250" text-anchor="middle" class="heading">Radxa ROCK 5C</text>
+  <text x="1195" y="278" text-anchor="middle" class="label">J3 button header</text>
+  <rect x="1105" y="315" width="180" height="140" rx="7" class="connector"/>
+  <circle cx="1145" cy="335" r="12" class="pad"/><text x="1170" y="340" class="pin">1  5V_DCIN</text>
+  <circle cx="1145" cy="385" r="12" class="pad"/><text x="1170" y="390" class="pin">2  GND</text>
+  <circle cx="1145" cy="435" r="12" class="pad"/><text x="1170" y="440" class="pin">3  PWRON_L</text>
+  <text x="1195" y="302" text-anchor="middle" class="small" fill="#d23838">powered internally from USB-C</text>
+  <text x="1195" y="495" text-anchor="middle" class="small">No external wire to J3 pin 1.</text>
+
+  <!-- main wires -->
+  <path d="M245 324 H340" class="wire signal"/>
+  <rect x="340" y="307" width="80" height="34" rx="4" fill="#ffffff" stroke="#e67e22" stroke-width="3"/>
+  <path d="M420 324 H490 V245 H550" class="wire signal"/>
+  <text x="348" y="302" class="small">R2  330 Ω</text>
+  <!-- GPIO17 startup pull-up, connected on the IC side of R2 -->
+  <path d="M245 249 H450 V263" class="wire logic-power"/>
+  <rect x="433" y="263" width="34" height="40" rx="4" fill="#ffffff" stroke="#7b4ab3" stroke-width="3"/>
+  <path d="M450 303 V324" class="wire logic-power"/>
+  <circle cx="450" cy="324" r="5" fill="#e67e22"/>
+  <text x="472" y="278" class="label" fill="#7b4ab3">R1</text>
+  <text x="472" y="299" class="small">10 kΩ</text>
+  <path d="M155 249 H25 V90 H890 V245" class="wire power"/>
+  <text x="335" y="81" class="label" fill="#d23838">+5 V</text>
+  <path d="M550 325 H510 V570 H980 V435 H1133" class="wire signal"/>
+  <text x="820" y="558" text-anchor="end" class="label" fill="#e67e22">PWRON_L</text>
+
+  <!-- ground bus -->
+  <path d="M155 279 V740 H1145 V385" class="wire ground"/>
+  <path d="M550 285 V740" class="wire ground"/>
+  <path d="M720 690 V740" class="wire ground"/>
+  <circle cx="550" cy="740" r="5" fill="#2674b9"/><circle cx="720" cy="740" r="5" fill="#2674b9"/>
+  <text x="170" y="730" class="label" fill="#2674b9">common ground</text>
+
+  <!-- capacitor -->
+  <path d="M890 245 H920" class="wire power"/>
+  <path d="M920 220 V270 M935 220 V270" class="wire"/>
+  <path d="M935 245 H970 V740" class="wire ground"/>
+  <circle cx="890" cy="245" r="5" fill="#d23838"/>
+  <circle cx="970" cy="740" r="5" fill="#2674b9"/>
+  <text x="927" y="178" text-anchor="middle" class="label">C1</text>
+  <text x="927" y="198" text-anchor="middle" class="small">0.1 µF</text>
+  <text x="927" y="214" text-anchor="middle" class="small">decoupling</text>
+
+  <!-- unused inputs -->
+  <path d="M550 385 H530 V740 M550 425 H540 V740 M890 285 H920 V740 M890 325 H930 V740 M890 425 H940 V740 M890 465 H950 V740" class="wire ground"/>
+  <rect x="385" y="746" width="630" height="148" rx="8" class="note"/>
+  <text x="405" y="769" class="small"><tspan font-weight="bold">Required:</tspan> Ground unused inputs 4, 5, 9, 10, 12, and 13.</text>
+  <text x="405" y="792" class="small">Leave outputs 6, 8, and 11 open.</text>
+  <text x="405" y="815" class="small">R1 holds the key released at startup.</text>
+  <text x="405" y="838" class="small">R2 limits fault current.</text>
+  <text x="405" y="861" class="small">Place C1 close to U1 pins 14 and 7.</text>
+  <text x="405" y="884" class="small">Do not wire J3 pin 1 externally. Never apply +5 V to GPIO17 or PWRON_L.</text>
+</svg>
