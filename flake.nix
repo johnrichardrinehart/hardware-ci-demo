@@ -37,6 +37,14 @@
         fileset = lib.fileset.unions [ ./schematic.svg ./slides.typ ];
       };
       maxSdImageBytes = 4 * 1024 * 1024 * 1024;
+      mkX86System = enableTetris: lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./nixosConfigurations/default.nix
+          ./nixosConfigurations/x86_64
+          { hardwareCiDemo.tetris.enable = enableTetris; }
+        ];
+      };
       sizeCheck = name: image:
         nixpkgs.legacyPackages.x86_64-linux.runCommand "${name}-under-4GiB" {
           inherit image;
@@ -68,11 +76,16 @@
             ./nixosConfigurations/rock5c
           ];
         };
+
+        x86_64-linux-minimal = mkX86System false;
+        x86_64-linux-tetris = mkX86System true;
       };
 
       packages.x86_64-linux = {
         rpi4-sd-image = nixosConfigurations.rpi4.config.system.build.sdImage;
         rock5c-sd-image = nixosConfigurations.rock5c.config.system.build.sdImage;
+        x86_64-linux-minimal = nixosConfigurations.x86_64-linux-minimal.config.system.build.toplevel;
+        x86_64-linux-tetris = nixosConfigurations.x86_64-linux-tetris.config.system.build.toplevel;
         slides = hostPkgs.runCommand "hardware-ci-demo-slides.pdf" {
           nativeBuildInputs = [ hostPkgs.typst ];
         } ''
@@ -90,6 +103,26 @@
         rpi4-sd-image-under-4GiB = sizeCheck "rpi4-sd-image" packages.x86_64-linux.rpi4-sd-image;
         rock5c-sd-image-under-4GiB = sizeCheck "rock5c-sd-image" packages.x86_64-linux.rock5c-sd-image;
         slides = packages.x86_64-linux.slides;
+        x86_64-linux-minimal =
+          let
+            closure = packages.x86_64-linux.x86_64-linux-minimal;
+            closureInfo = hostPkgs.closureInfo { rootPaths = [ closure ]; };
+          in
+          hostPkgs.runCommand "x86_64-linux-minimal-without-tetris" { } ''
+            test ! -e ${closure}/sw/bin/tetris
+            ! grep -q -- '-vitetris-' ${closureInfo}/store-paths
+            touch "$out"
+          '';
+        x86_64-linux-tetris =
+          let
+            closure = packages.x86_64-linux.x86_64-linux-tetris;
+            closureInfo = hostPkgs.closureInfo { rootPaths = [ closure ]; };
+          in
+          hostPkgs.runCommand "x86_64-linux-tetris-command" { } ''
+            test -x ${closure}/sw/bin/tetris
+            grep -q -- '-vitetris-' ${closureInfo}/store-paths
+            touch "$out"
+          '';
       };
 
       devShells.x86_64-linux.default = hostPkgs.mkShell {

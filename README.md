@@ -75,9 +75,10 @@ behavior.
 
 ## NixOS closures
 
-`flake.nix` defines two headless `aarch64-linux` SD-card images. The RPi
-configuration uses only the direct upstream `nixos/nixpkgs` input. The ROCK
-5C configuration uses `johnrichardrinehart/rock5c-nixos` with its board
+`flake.nix` defines two headless `aarch64-linux` SD-card images and two
+`x86_64-linux` system closures. The RPi configuration uses only the direct
+upstream `nixos/nixpkgs` input. The ROCK 5C configuration uses
+`johnrichardrinehart/rock5c-nixos` with its board
 modules and package overlay. It does not use the RPi input. The flake overrides
 that input's `nixpkgs` revision with the first upstream revision that exports
 `ubootRock5ModelC`; the ROCK module requires that firmware package. It imports
@@ -86,6 +87,28 @@ flash, or session modules. Both configurations disable documentation and ALSA.
 They do not configure a desktop or an automatic root login. Both images
 include Bash, coreutils, util-linux, systemd tools, and the `en_US.UTF-8`
 locale for diagnostics. The RPi also includes `tio` and `libgpiod` tools.
+
+### x86_64-linux closures
+
+Both x86 closures import `nixosConfigurations/x86_64/default.nix`. They use
+the same hostname, users, services, locale, and diagnostic tools. The Tetris
+variant enables one module option that adds `vitetris`. This package already
+provides the `tetris` command.
+
+Build each closure with these commands:
+
+```console
+nix build .#x86_64-linux-minimal
+nix build .#x86_64-linux-tetris
+```
+
+Run the focused checks to verify that only the Tetris closure contains the
+package and command:
+
+```console
+nix build .#checks.x86_64-linux.x86_64-linux-minimal
+nix build .#checks.x86_64-linux.x86_64-linux-tetris
+```
 
 ### Serial consoles
 
