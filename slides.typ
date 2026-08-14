@@ -19,7 +19,7 @@
   ),
   config-info(
     title: [Developing hardware at the speed of software],
-    subtitle: [Reproducible images, remote power control, and observable boots],
+    subtitle: [Reproducible BSPs, best-in-class modularity, and transactional rollback with Nix],
     author: [John Rinehart],
     date: [2026],
     institution: [Hardware CI demo],
@@ -49,14 +49,14 @@
 
 = The problem
 
-== CI stops at the edge of the computer
+== CI omits hardware
 
 #grid(
   columns: (1fr, 1fr, 1fr),
   gutter: 1em,
-  card([Build], [Produce a known system image.]),
-  card([Deploy], [Write it to real removable storage.]),
-  card([Observe], [Control power and capture the complete boot.]),
+  card([Build], []),
+  card([Deploy], []),
+  card([Observe], []),
 )
 
 #v(1.2em)
@@ -79,11 +79,11 @@ buttons, and removable media.
   card([CI runner], [Builds the NixOS closures and selects an image.]),
   align(center)[#text(size: 1.5em, fill: brand-orange)[→]],
   card(
-    [Raspberry Pi 4],
-    [Flashes storage, controls the power key, and records serial output.],
+    [Controller],
+    [Flashes storage, or interacts with the bootloader, controls the power key, and records serial output.],
   ),
   align(center)[#text(size: 1.5em, fill: brand-orange)[→]],
-  card([ROCK 5C], [Boots the candidate image on the target hardware.]),
+  card([DUT], [Boots the candidate image on the target hardware.]),
 )
 
 #v(1em)
@@ -93,14 +93,45 @@ buttons, and removable media.
 == Control the key; never drive it high
 
 #figure(
-  image("schematic.svg", width: 83%),
-  caption: [An open-collector gate emulates the ROCK 5C power button.],
+  grid(
+    columns: (1fr, 0.2fr, 1fr, 0.2fr, 1fr),
+    align: horizon,
+    card(
+      [Controller board (RPi)],
+      [GPIO17 requests a power-key or reset pulse.],
+      accent: brand-orange,
+    ),
+    align(center)[
+      #text(size: 0.6em, fill: brand-orange)[GPIO command]
+      #linebreak()
+      #text(size: 1.5em, fill: brand-orange)[→]
+    ],
+    card(
+      [Reset circuit],
+      [An open-collector output pulls `PWRON_L` low only.],
+    ),
+    align(center)[
+      #text(size: 0.6em, fill: brand-orange)[Active-low pulse]
+      #linebreak()
+      #text(size: 1.5em, fill: brand-orange)[→]
+    ],
+    card(
+      [ROCK 5C (DUT)],
+      [Its pull-up releases `PWRON_L` high after the pulse.],
+      accent: brand-orange,
+    ),
+  ),
+  caption: [The RPi commands the reset circuit, which sends an active-low pulse to the DUT.],
 )
 
+#v(0.6em)
+
+#align(center)[#text(size: 0.8em, fill: brand-green)[All three blocks share a ground reference.]]
+
 #speaker-note[
-  - GPIO17 drives one 74LS136N input through 330 ohms.
-  - Grounding the second input makes the gate follow GPIO17.
-  - The output only pulls PWRON_L low. The ROCK releases it with its own pull-up.
+  - GPIO17 requests the pulse; it does not connect directly to PWRON_L.
+  - The reset circuit only pulls PWRON_L low.
+  - The ROCK 5C pull-up releases PWRON_L high after the pulse.
 ]
 
 == Separate power, common ground
