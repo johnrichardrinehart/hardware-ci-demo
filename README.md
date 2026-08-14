@@ -1,5 +1,9 @@
 # Hardware CI demo
 
+> [!WARNING]
+> The `broken` branch contains intentional deployment failures. Follow
+> [the recovery demonstration runbook](RECOVERY_DEMOS.md) before using them.
+
 This circuit lets a Raspberry Pi 4 Model B assert the Radxa ROCK 5C
 `PWRON_L` signal. It is for the talk, *Developing hardware at the speed of
 software*.

@@ -63,6 +63,18 @@
           test "$image_size" -le ${toString maxSdImageBytes}
           touch "$out"
         '';
+      mkRock5c = extraModules: rockNixpkgs.lib.nixosSystem {
+        inherit system;
+        pkgs = import rockNixpkgs {
+          inherit system;
+          overlays = [ rock5c-nixos.overlays.default ];
+        };
+        specialArgs.rock5cNixos = rock5c-nixos;
+        modules = [
+          ./nixosConfigurations/default.nix
+          ./nixosConfigurations/rock5c
+        ] ++ extraModules;
+      };
     in
     rec {
       nixosConfigurations = {
@@ -74,18 +86,13 @@
           ];
         };
 
-        rock5c = rockNixpkgs.lib.nixosSystem {
-          inherit system;
-          pkgs = import rockNixpkgs {
-            inherit system;
-            overlays = [ rock5c-nixos.overlays.default ];
-          };
-          specialArgs.rock5cNixos = rock5c-nixos;
-          modules = [
-            ./nixosConfigurations/default.nix
-            ./nixosConfigurations/rock5c
-          ];
-        };
+        rock5c = mkRock5c [ ];
+        rock5c-runtime-broken = mkRock5c [
+          ./nixosConfigurations/rock5c/runtime-broken.nix
+        ];
+        rock5c-boot-broken = mkRock5c [
+          ./nixosConfigurations/rock5c/boot-broken.nix
+        ];
 
         x86_64-linux-minimal = mkX86System false;
         x86_64-linux-tetris = mkX86System true;
