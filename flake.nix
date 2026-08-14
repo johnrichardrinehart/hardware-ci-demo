@@ -16,6 +16,26 @@
       lib = nixpkgs.lib;
       rockNixpkgs = rock5c-nixos.inputs.nixpkgs;
       system = "aarch64-linux";
+      hostPkgs = nixpkgs.legacyPackages.x86_64-linux;
+      touying = hostPkgs.fetchzip {
+        url = "https://packages.typst.org/preview/touying-0.7.4.tar.gz";
+        hash = "sha256-fp/EL3OKBPehbbwyXR8o1UladQk//g9M+loWcWBdEv4=";
+        stripRoot = false;
+      };
+      uniwarn = hostPkgs.fetchzip {
+        url = "https://packages.typst.org/preview/uniwarn-0.1.1.tar.gz";
+        hash = "sha256-sTGerNf9eBuuvl20yytfvQulfWiU5gtPZOB6GK0M0ho=";
+        stripRoot = false;
+      };
+      typstPackagePath = hostPkgs.runCommand "hardware-ci-demo-typst-packages" { } ''
+        mkdir -p "$out/preview/touying" "$out/preview/uniwarn"
+        ln -s ${touying} "$out/preview/touying/0.7.4"
+        ln -s ${uniwarn} "$out/preview/uniwarn/0.1.1"
+      '';
+      slideSources = lib.fileset.toSource {
+        root = ./.;
+        fileset = lib.fileset.unions [ ./schematic.svg ./slides.typ ];
+      };
       maxSdImageBytes = 4 * 1024 * 1024 * 1024;
       sizeCheck = name: image:
         nixpkgs.legacyPackages.x86_64-linux.runCommand "${name}-under-4GiB" {
@@ -144,11 +164,29 @@
       packages.x86_64-linux = {
         rpi4-sd-image = nixosConfigurations.rpi4.config.system.build.sdImage;
         rock5c-sd-image = nixosConfigurations.rock5c.config.system.build.sdImage;
+        slides = hostPkgs.runCommand "hardware-ci-demo-slides.pdf" {
+          nativeBuildInputs = [ hostPkgs.typst ];
+        } ''
+          typst compile \
+            --format pdf \
+            --root ${slideSources} \
+            --package-path ${typstPackagePath} \
+            --font-path ${lib.makeSearchPath "share/fonts" [ hostPkgs.fira hostPkgs.fira-math ]} \
+            --ignore-system-fonts \
+            ${slideSources}/slides.typ "$out"
+        '';
       };
 
       checks.x86_64-linux = {
         rpi4-sd-image-under-4GiB = sizeCheck "rpi4-sd-image" packages.x86_64-linux.rpi4-sd-image;
         rock5c-sd-image-under-4GiB = sizeCheck "rock5c-sd-image" packages.x86_64-linux.rock5c-sd-image;
+        slides = packages.x86_64-linux.slides;
+      };
+
+      devShells.x86_64-linux.default = hostPkgs.mkShell {
+        packages = [ hostPkgs.fira hostPkgs.fira-math hostPkgs.typst ];
+        TYPST_FONT_PATHS = lib.makeSearchPath "share/fonts" [ hostPkgs.fira hostPkgs.fira-math ];
+        TYPST_PACKAGE_PATH = typstPackagePath;
       };
     };
 }

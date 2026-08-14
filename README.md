@@ -51,6 +51,20 @@ connect the RPi 5 V rail to J3 pin 3. Keep the RPi powered whenever the
 74LS136N or ROCK is powered. Verify the board revision and J3 pin labels
 before use.
 
+## Presentation
+
+The slide deck uses Typst and Touying's Metropolis theme. The Nix development
+shell supplies Typst, Fira Sans, and Fira Math.
+
+```console
+nix develop
+typst watch slides.typ slides.pdf
+```
+
+Run `nix build .#slides` for a reproducible PDF in `result`. The flake pins
+Touying 0.7.4 and its package dependency. Open the generated PDF in a
+presenter after the build completes.
+
 ## Project foundation
 
 I reviewed `nix-project-template` and its customization guide. This initial
