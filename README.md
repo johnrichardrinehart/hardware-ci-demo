@@ -91,15 +91,13 @@ locale for diagnostics. The RPi also includes `tio` and `libgpiod` tools.
 
 The RPi uses the upstream Raspberry Pi 4 kernel. It keeps its Linux console
 on GPIO14 and GPIO15 at 115200 baud. The loaded RPi 4 DTB maps those pins to
-`serial1`, the mini-UART. Linux therefore assigns it line 1 and names it
-`ttyS1`. The image reserves two 8250 runtime slots so alias line 1 can
-register. It selects earlycon from the DTB `stdout-path`, so Linux uses the
-dedicated BCM2835 AUX UART setup. It fixes the mini-UART core clock at
-250 MHz, so its 115200-baud divisor remains stable across firmware and Linux
-handoff. It
-enables `serial-getty@ttyS1`, so the RPi
-serial terminal provides a login prompt after userspace starts. Connect a
-separate 3.3 V USB-to-TTL adapter to the ROCK 5C console:
+the mini-UART. The generic 8250 driver registers it as its first runtime port,
+`ttyS0`. The image reserves one 8250 runtime slot. It selects earlycon from
+the DTB `stdout-path`, so Linux uses the dedicated BCM2835 AUX UART setup. It
+fixes the mini-UART core clock at 250 MHz, so its 115200-baud divisor remains
+stable across firmware and Linux handoff. It enables `serial-getty@ttyS0`, so
+the RPi serial terminal provides a login prompt after userspace starts.
+Connect a separate 3.3 V USB-to-TTL adapter to the ROCK 5C console:
 
 | ROCK 5C pin | USB-to-TTL adapter pin |
 | --- | --- |

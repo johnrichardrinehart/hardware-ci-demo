@@ -27,9 +27,9 @@ in
   # Use the upstream Raspberry Pi 4 kernel and mini-UART console.
   boot.kernelPackages = pkgs.linuxPackages_rpi4;
   boot.kernelParams = lib.mkForce [
-    "8250.nr_uarts=2"
+    "8250.nr_uarts=1"
     "earlycon"
-    "console=ttyS1,115200"
+    "console=ttyS0,115200"
     "console=tty1"
   ];
 
@@ -44,7 +44,7 @@ in
   '';
   sdImage.compressImage = false;
 
-  systemd.services."serial-getty@ttyS1" = {
+  systemd.services."serial-getty@ttyS0" = {
     enable = true;
     wantedBy = [ "getty.target" ];
   };
