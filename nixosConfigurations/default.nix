@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   networking = {
@@ -14,6 +19,7 @@
     pkgs.bashInteractive
     pkgs.coreutils
     pkgs.gnugrep
+    config.i18n.glibcLocales
     pkgs.systemd
     pkgs.util-linux
   ];

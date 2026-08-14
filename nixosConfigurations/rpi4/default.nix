@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   modulesPath,
   pkgs,
@@ -61,6 +62,7 @@ in
     pkgs.coreutils
     pkgs.gnugrep
     pkgs.libgpiod
+    config.i18n.glibcLocales
     rock5c-power-cycle
     pkgs.systemd
     pkgs.tio
