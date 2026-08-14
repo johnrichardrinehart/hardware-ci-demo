@@ -136,8 +136,9 @@ appears as `/dev/ttyUSB0`:
 tio --baudrate 1500000 /dev/ttyUSB0
 ```
 
-The adapter isolates ROCK output from RPi `serial0` output. The RPi console
-continues to use GPIO14 and GPIO15. The USB adapter records the ROCK console.
+The adapter separates ROCK output from RPi `serial0` output. The RPi console
+continues to use GPIO14 and GPIO15. The ROCK image uses `ttyS2` at 1,500,000
+baud and starts `serial-getty@ttyS2`. The USB adapter records the ROCK console.
 
 Both images enable password SSH for the `demo` user. Its password is `demo`,
 and it is in the `wheel` group. Both images include the configured Bash shell,
@@ -199,7 +200,9 @@ nix build .#rock5c-sd-image
 
 The RPi image uses the upstream Raspberry Pi 4 firmware and U-Boot SD-image
 module. The ROCK image uses the ROCK 5C module's U-Boot and SD-image builder.
-Both image files include the boot firmware and root filesystem.
+Its root filesystem uses the `ROCK5C_SD` label to avoid collisions with an
+older image on eMMC. Both image files include the boot firmware and root
+filesystem.
 
 Run the size checks after building the images:
 
