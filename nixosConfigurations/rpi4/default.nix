@@ -59,6 +59,7 @@ in
   environment.systemPackages = lib.mkOverride 40 [
     pkgs.bashInteractive
     pkgs.coreutils
+    pkgs.gnugrep
     pkgs.libgpiod
     rock5c-power-cycle
     pkgs.systemd

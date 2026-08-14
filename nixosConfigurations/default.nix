@@ -13,6 +13,7 @@
   environment.systemPackages = lib.mkForce [
     pkgs.bashInteractive
     pkgs.coreutils
+    pkgs.gnugrep
     pkgs.systemd
     pkgs.util-linux
   ];
