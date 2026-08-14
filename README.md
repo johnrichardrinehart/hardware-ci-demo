@@ -91,9 +91,10 @@ locale for diagnostics. The RPi also includes `tio` and `libgpiod` tools.
 ### x86_64-linux closures
 
 Both x86 closures import `nixosConfigurations/x86_64/default.nix`. They use
-the same hostname, users, services, locale, and diagnostic tools. The Tetris
-variant enables one module option that adds `vitetris`. This package already
-provides the `tetris` command.
+the same hostname, users, services, locale, and diagnostic tools. Both accept
+`demo` as the login name and password on the console or through SSH. The
+Tetris variant enables one module option that adds `vitetris`. This package
+already provides the `tetris` command.
 
 Build each closure with these commands:
 

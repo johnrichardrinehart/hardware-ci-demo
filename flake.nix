@@ -45,6 +45,16 @@
           { hardwareCiDemo.tetris.enable = enableTetris; }
         ];
       };
+      demoLoginEnabled = configuration:
+        let
+          cfg = configuration.config;
+          demo = cfg.users.users.demo;
+        in
+        cfg.users.mutableUsers == false
+        && demo.isNormalUser
+        && demo.password == "demo"
+        && cfg.services.openssh.enable
+        && cfg.services.openssh.settings.PasswordAuthentication;
       sizeCheck = name: image:
         nixpkgs.legacyPackages.x86_64-linux.runCommand "${name}-under-4GiB" {
           inherit image;
@@ -105,9 +115,11 @@
         slides = packages.x86_64-linux.slides;
         x86_64-linux-minimal =
           let
+            configuration = nixosConfigurations.x86_64-linux-minimal;
             closure = packages.x86_64-linux.x86_64-linux-minimal;
             closureInfo = hostPkgs.closureInfo { rootPaths = [ closure ]; };
           in
+          assert demoLoginEnabled configuration;
           hostPkgs.runCommand "x86_64-linux-minimal-without-tetris" { } ''
             test ! -e ${closure}/sw/bin/tetris
             ! grep -q -- '-vitetris-' ${closureInfo}/store-paths
@@ -115,9 +127,11 @@
           '';
         x86_64-linux-tetris =
           let
+            configuration = nixosConfigurations.x86_64-linux-tetris;
             closure = packages.x86_64-linux.x86_64-linux-tetris;
             closureInfo = hostPkgs.closureInfo { rootPaths = [ closure ]; };
           in
+          assert demoLoginEnabled configuration;
           hostPkgs.runCommand "x86_64-linux-tetris-command" { } ''
             test -x ${closure}/sw/bin/tetris
             grep -q -- '-vitetris-' ${closureInfo}/store-paths
